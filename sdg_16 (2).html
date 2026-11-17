@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDG 16 시민 참여·투명성·권리 플랫폼 | 평화, 정의와 강력한 제도</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Pretendard / Noto Sans KR / Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            800: '#162A45',
+                            900: '#0F1E33',
+                            950: '#091220',
+                        },
+                        teal: {
+                            500: '#14B8A6',
+                            600: '#0D9488',
+                            700: '#0F766E',
+                        },
+                        gold: {
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 커스텀 스크롤바 및 부드러운 전환 효과 */
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+            overflow-x: hidden;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.35s ease-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* 레인지 슬라이더 커스텀 스타일 */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #0F1E33;
+            border: 3px solid #F59E0B;
+            cursor: pointer;
+            margin-top: -7px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #CBD5E1;
+            border-radius: 999px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- 상단 내비게이션 헤더 -->
+    <header class="bg-navy-900 text-white shadow-lg sticky top-0 z-40 border-b border-navy-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <!-- 브랜드 로고 및 타이틀 -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-teal-500 to-navy-800 border border-gold-400/50 flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-scale-balanced text-gold-400 text-lg sm:text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-0.5 text-[11px] font-bold bg-gold-500 text-navy-950 rounded-md tracking-wider">UN SDG 16</span>
+                            <span class="text-xs text-teal-400 font-medium hidden sm:inline">평화·정의·강력한 제도</span>
+                        </div>
+                        <h1 class="text-base sm:text-xl font-bold tracking-tight text-white">바른제도 <span class="text-teal-400 font-normal">| 시민권리·투명성 허브</span></h1>
+                    </div>
+                </div>
+
+                <!-- 사용자 시민 역량 지수 배지 -->
+                <div class="flex items-center space-x-3 sm:space-x-5">
+                    <div class="bg-navy-800/90 border border-slate-700 rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 flex items-center space-x-3">
+                        <div class="text-right">
+                            <p class="text-[10px] sm:text-xs text-slate-400">나의 시민 정의 지수</p>
+                            <p class="text-sm sm:text-base font-bold text-gold-400"><span id="header-score">0</span> <span class="text-xs font-normal text-slate-300">점</span></p>
+                        </div>
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-teal-600/20 border border-teal-500/40 flex items-center justify-center text-teal-400">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 탭 메뉴 바 (모바일 가로 스크롤 지원) -->
+        <nav class="bg-navy-950/60 border-t border-navy-800 overflow-x-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-2 py-2">
+                <button onclick="switchTab('rights')" id="tab-btn-rights" class="tab-btn active flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all bg-teal-600 text-white shadow">
+                    <i class="fa-solid fa-gavel"></i>
+                    <span>1. 권리·법률 시뮬레이터</span>
+                </button>
+                <button onclick="switchTab('budget')" id="tab-btn-budget" class="tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-slate-300 hover:bg-navy-800 hover:text-white">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>2. 투명 예산·정책 참여</span>
+                </button>
+                <button onclick="switchTab('whistleblower')" id="tab-btn-whistleblower" class="tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-slate-300 hover:bg-navy-800 hover:text-white">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>3. 반부패·공익신고 센터</span>
+                </button>
+                <button onclick="switchTab('tracker')" id="tab-btn-tracker" class="tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all text-slate-300 hover:bg-navy-800 hover:text-white">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>4. 일상 정의 실천 트래커</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 히어로 배너 (SDG 16 핵심 목표 요약) -->
+    <section class="bg-gradient-to-r from-navy-900 via-navy-800 to-teal-900 text-white py-6 sm:py-8 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-gold-400 font-medium mb-2">
+                    <i class="fa-solid fa-landmark"></i>
+                    <span>법의 지배 · 알 권리 · 부패 척결 · 포용적 의사결정</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold leading-snug">모두를 위한 정의로운 사회, 투명하고 책임 있는 제도를 함께 만듭니다</h2>
+                <p class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
+                    일상 속 법적 권리를 익히고, 공공 예산의 투명성을 직접 설계하며, 부패 없는 안전한 공동체를 위한 시민 행동을 실천해 보세요.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                <div class="bg-navy-950/60 border border-white/10 rounded-xl px-4 py-2.5 flex-1 md:flex-initial text-center">
+                    <span class="block text-[11px] text-slate-400">완료한 시나리오</span>
+                    <span id="hero-scenarios-count" class="text-lg font-bold text-teal-400">0 / 4</span>
+                </div>
+                <div class="bg-navy-950/60 border border-white/10 rounded-xl px-4 py-2.5 flex-1 md:flex-initial text-center">
+                    <span class="block text-[11px] text-slate-400">오늘의 실천율</span>
+                    <span id="hero-mission-rate" class="text-lg font-bold text-gold-400">0%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+        <!-- =====================================================================
+             TAB 1: 청년·시민 권리 및 법률 시나리오 시뮬레이터
+        ====================================================================== -->
+        <section id="tab-rights" class="tab-content active">
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-bold text-navy-900 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-navy-900 text-gold-400 flex items-center justify-center text-sm"><i class="fa-solid fa-gavel"></i></span>
+                    청년·시민 권리 및 법률 대응 시뮬레이터
+                </h3>
+                <p class="text-sm text-slate-600 mt-1">실제 생활에서 마주할 수 있는 권리 침해 상황을 선택하고, 법적·제도적 구제 절차를 체험해 보세요.</p>
+            </div>
+
+            <!-- 시나리오 선택 카드 그리드 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="scenario-cards">
+                <!-- JS로 동적 렌더링 -->
+            </div>
+
+            <!-- 시나리오 인터랙티브 플레이어 -->
+            <div id="scenario-player" class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-navy-900 text-white px-6 py-4 flex flex-wrap justify-between items-center gap-2">
+                    <div class="flex items-center space-x-2">
+                        <span id="player-badge" class="px-2.5 py-1 rounded-md text-xs font-bold bg-teal-600 text-white">노동 권리</span>
+                        <h4 id="player-title" class="font-bold text-base sm:text-lg">시나리오를 선택해 주세요</h4>
+                    </div>
+                    <span id="player-law-ref" class="text-xs text-gold-400 bg-navy-800 px-3 py-1 rounded-full border border-navy-700">근거 법령 안내</span>
+                </div>
+
+                <div class="p-6 sm:p-8">
+                    <!-- 상황 설명 -->
+                    <div class="bg-slate-50 border-l-4 border-navy-900 p-4 sm:p-5 rounded-r-xl mb-6">
+                        <p class="text-xs font-bold text-navy-800 uppercase tracking-wider mb-1"><i class="fa-solid fa-circle-info mr-1 text-teal-600"></i> 상황 브리핑</p>
+                        <p id="player-situation" class="text-sm sm:text-base text-slate-800 leading-relaxed"></p>
+                    </div>
+
+                    <!-- 선택지 목록 -->
+                    <div id="player-choices" class="space-y-3">
+                        <!-- JS로 동적 렌더링 -->
+                    </div>
+
+                    <!-- 피드백 및 법적 구제 가이드 영역 -->
+                    <div id="player-feedback" class="hidden mt-6 rounded-2xl p-5 sm:p-6 border transition-all">
+                        <div class="flex items-start space-x-3">
+                            <div id="feedback-icon" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-lg"></div>
+                            <div class="flex-1">
+                                <h5 id="feedback-heading" class="font-bold text-base sm:text-lg mb-1"></h5>
+                                <p id="feedback-desc" class="text-sm text-slate-700 leading-relaxed mb-4"></p>
+                                
+                                <div class="bg-white/80 rounded-xl p-4 border border-slate-200/80 space-y-2">
+                                    <p class="text-xs font-bold text-navy-900 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-building-columns text-teal-600"></i>
+                                        <span>실제 도움받을 수 있는 공식 제도 및 기관</span>
+                                    </p>
+                                    <p id="feedback-institution" class="text-xs sm:text-sm text-slate-600"></p>
+                                </div>
+
+                                <!-- 자동 진행(Auto-Advance) 카운트다운 게이지 및 제어 바 -->
+                                <div id="auto-advance-box" class="hidden mt-4 pt-3 border-t border-emerald-200/80">
+                                    <div class="flex items-center justify-between text-xs font-bold text-emerald-900 mb-1.5">
+                                        <span id="auto-advance-label" class="flex items-center gap-1.5">
+                                            <i class="fa-solid fa-forward-step text-teal-600 animate-pulse"></i>
+                                            <span>잠시 후 다음 시나리오로 자동 이동합니다...</span>
+                                        </span>
+                                        <button type="button" onclick="cancelAutoAdvance()" class="text-[11px] px-2.5 py-0.5 rounded-md bg-white/90 hover:bg-white text-slate-600 border border-slate-300 transition">
+                                            현재 화면에 머무르기
+                                        </button>
+                                    </div>
+                                    <div class="w-full h-2 bg-emerald-200/70 rounded-full overflow-hidden">
+                                        <div id="auto-advance-bar" style="width: 100%" class="h-full bg-teal-600 transition-all duration-100 ease-linear"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================================
+             TAB 2: 공공 예산 및 정책 투명성 탐색기 (참여예산 시뮬레이터)
+        ====================================================================== -->
+        <section id="tab-budget" class="tab-content">
+            <div class="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-navy-900 flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-lg bg-navy-900 text-gold-400 flex items-center justify-center text-sm"><i class="fa-solid fa-chart-pie"></i></span>
+                        공공 예산 및 정책 투명성 참여 시뮬레이터
+                    </h3>
+                    <p class="text-sm text-slate-600 mt-1">우리 지역사회의 공공 혁신 예산 <strong>100억 원</strong>을 4대 핵심 제도에 배분하여 투명성과 공정성 지수 변화를 확인하세요.</p>
+                </div>
+                <button onclick="resetBudget()" class="self-start sm:self-auto px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-left"></i> 기본 배분 초기화
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- 왼쪽: 예산 배분 슬라이더 패널 -->
+                <div class="lg:col-span-7 bg-white rounded-2xl shadow-md border border-slate-200 p-6 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                        <span class="text-sm font-bold text-navy-900">총 배분 가능 예산</span>
+                        <div class="text-right">
+                            <span id="budget-remaining" class="text-lg font-extrabold text-teal-600">0억 원 남음</span>
+                            <span class="text-xs text-slate-400 block">총합 100억 원 기준</span>
+                        </div>
+                    </div>
+
+                    <!-- 항목 1: 사법 접근성 및 법률 구조 -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-navy-900"></span>
+                                1. 취약계층 무료 법률 구조·사법 접근성 강화
+                            </label>
+                            <span class="text-sm font-bold text-navy-900 bg-slate-100 px-3 py-1 rounded-lg"><span id="val-justice">25</span>억 원</span>
+                        </div>
+                        <input type="range" id="slider-justice" min="0" max="100" value="25" class="w-full" oninput="updateBudget('justice', this.value)">
+                        <p class="text-xs text-slate-500">국선변호 확대, 마을변호사 운영, 소액사건 신속 지원 시스템 구축</p>
+                    </div>
+
+                    <!-- 항목 2: 반부패 감사 및 정보공개 포털 -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-teal-600"></span>
+                                2. 공공데이터 개방 및 실시간 예산 감시 시스템
+                            </label>
+                            <span class="text-sm font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-lg"><span id="val-transparency">25</span>억 원</span>
+                        </div>
+                        <input type="range" id="slider-transparency" min="0" max="100" value="25" class="w-full" oninput="updateBudget('transparency', this.value)">
+                        <p class="text-xs text-slate-500">공공계약 원가 공개, AI 기반 이상 거래 탐지, 시민 감사관 제도 운영</p>
+                    </div>
+
+                    <!-- 항목 3: 지역 치안·범죄 예방 및 피해자 보호 -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-gold-500"></span>
+                                3. 생활 안전 인프라 및 범죄 피해자 회복 지원
+                            </label>
+                            <span class="text-sm font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-lg"><span id="val-safety">25</span>억 원</span>
+                        </div>
+                        <input type="range" id="slider-safety" min="0" max="100" value="25" class="w-full" oninput="updateBudget('safety', this.value)">
+                        <p class="text-xs text-slate-500">안심귀갓길 조성, 디지털 성범죄·보이스피싱 예방 및 피해자 원스톱 보호</p>
+                    </div>
+
+                    <!-- 항목 4: 디지털 포용 및 시민 참여 플랫폼 -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
+                                4. 디지털 격차 해소 및 청소년·시민 숙의 공론장
+                            </label>
+                            <span class="text-sm font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-lg"><span id="val-inclusion">25</span>억 원</span>
+                        </div>
+                        <input type="range" id="slider-inclusion" min="0" max="100" value="25" class="w-full" oninput="updateBudget('inclusion', this.value)">
+                        <p class="text-xs text-slate-500">고령층·장애인 디지털 행정 접근성 개선, 청년 의회 및 시민 투표 플랫폼</p>
+                    </div>
+
+                    <div class="pt-2">
+                        <button onclick="submitBudgetProposal()" class="w-full py-3.5 bg-navy-900 hover:bg-navy-800 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-file-signature text-gold-400"></i>
+                            <span>나의 참여예산안 확정 및 정책 리포트 생성 (+30점)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 실시간 영향력 분석 및 시각화 -->
+                <div class="lg:col-span-5 flex flex-col gap-6">
+                    <!-- 예산 비중 시각 바 -->
+                    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                        <h4 class="text-sm font-bold text-navy-900 mb-3">예산 포트폴리오 구성비</h4>
+                        <div class="w-full h-6 rounded-full overflow-hidden flex bg-slate-100 shadow-inner">
+                            <div id="bar-justice" style="width: 25%" class="bg-navy-900 transition-all duration-300" title="사법 접근성"></div>
+                            <div id="bar-transparency" style="width: 25%" class="bg-teal-600 transition-all duration-300" title="투명성·감사"></div>
+                            <div id="bar-safety" style="width: 25%" class="bg-gold-500 transition-all duration-300" title="안전·피해자 보호"></div>
+                            <div id="bar-inclusion" style="width: 25%" class="bg-indigo-500 transition-all duration-300" title="디지털 포용"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-4 text-xs">
+                            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-navy-900"></span> 사법 접근성 (<span id="pct-justice">25</span>%)</div>
+                            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-teal-600"></span> 투명성·감사 (<span id="pct-transparency">25</span>%)</div>
+                            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-gold-500"></span> 치안·피해자 보호 (<span id="pct-safety">25</span>%)</div>
+                            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-indigo-500"></span> 디지털 포용 (<span id="pct-inclusion">25</span>%)</div>
+                        </div>
+                    </div>
+
+                    <!-- 제도 역량 지표 예측 -->
+                    <div class="bg-navy-900 text-white rounded-2xl shadow-md p-6 flex-grow flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-bold text-base text-gold-400"><i class="fa-solid fa-chart-line mr-1.5"></i>제도 건강도 예측 시뮬레이션</h4>
+                                <span id="policy-grade" class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-teal-600 text-white">균형 발전형</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-300">행정 투명성 및 부패 억제력</span>
+                                        <span id="score-transparency" class="font-bold text-teal-400">78 / 100</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-navy-800 rounded-full overflow-hidden">
+                                        <div id="meter-transparency" style="width: 78%" class="h-full bg-teal-400 transition-all duration-300"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-300">법적 공정성 및 인권 보호 수준</span>
+                                        <span id="score-fairness" class="font-bold text-gold-400">76 / 100</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-navy-800 rounded-full overflow-hidden">
+                                        <div id="meter-fairness" style="width: 76%" class="h-full bg-gold-400 transition-all duration-300"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-300">시민 참여 효능감 및 포용성</span>
+                                        <span id="score-participation" class="font-bold text-indigo-400">75 / 100</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-navy-800 rounded-full overflow-hidden">
+                                        <div id="meter-participation" style="width: 75%" class="h-full bg-indigo-400 transition-all duration-300"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-navy-950/70 border border-navy-700 rounded-xl p-4">
+                            <p class="text-xs font-bold text-teal-400 mb-1">AI 정책 자문 코멘트</p>
+                            <p id="policy-advice" class="text-xs text-slate-300 leading-relaxed">
+                                4대 핵심 영역이 조화롭게 배분되어 제도적 안정성과 시민 신뢰도가 균형 있게 상승합니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================================
+             TAB 3: 반부패 및 공익신고 모의 체험·보호 가이드
+        ====================================================================== -->
+        <section id="tab-whistleblower" class="tab-content">
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-bold text-navy-900 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-navy-900 text-gold-400 flex items-center justify-center text-sm"><i class="fa-solid fa-user-shield"></i></span>
+                    반부패 및 공익신고 모의 체험 · 보호 센터
+                </h3>
+                <p class="text-sm text-slate-600 mt-1">공익침해행위 발견 시 신고자가 어떻게 법적으로 보호받는지 확인하고, 비실명 모의 신고 절차를 체험해 보세요.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- 왼쪽: 공익신고자 4중 안전장치 & 자가진단 체크리스트 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                        <h4 class="font-bold text-base text-navy-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-lock text-teal-600"></i>
+                            공익신고자 법적 4중 보호 장치
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                                <div class="flex items-center gap-2 font-bold text-sm text-navy-900">
+                                    <span class="w-6 h-6 rounded-full bg-teal-600 text-white text-xs flex items-center justify-center">1</span>
+                                    비실명 대리신고 제도
+                                </div>
+                                <p class="text-xs text-slate-600 mt-1 pl-8">신고자의 인적 사항을 밝히지 않고 변호사를 대리인으로 선임하여 국민권익위원회 등에 안전하게 신고할 수 있습니다.</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                                <div class="flex items-center gap-2 font-bold text-sm text-navy-900">
+                                    <span class="w-6 h-6 rounded-full bg-teal-600 text-white text-xs flex items-center justify-center">2</span>
+                                    신분비밀보장 의무 (형사처벌)
+                                </div>
+                                <p class="text-xs text-slate-600 mt-1 pl-8">신고자의 동의 없이 인적 사항을 공개하거나 보도한 자는 「공익신고자 보호법」에 따라 5년 이하의 징역 또는 5천만 원 이하의 벌금에 처해집니다.</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                                <div class="flex items-center gap-2 font-bold text-sm text-navy-900">
+                                    <span class="w-6 h-6 rounded-full bg-teal-600 text-white text-xs flex items-center justify-center">3</span>
+                                    불이익조치 금지 및 원상회복
+                                </div>
+                                <p class="text-xs text-slate-600 mt-1 pl-8">해고, 징계, 전보 등 어떠한 불이익 조치도 금지되며, 불이익 발생 시 보호조치 결정을 통해 원상회복을 강제합니다.</p>
+                            </div>
+                            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                                <div class="flex items-center gap-2 font-bold text-sm text-navy-900">
+                                    <span class="w-6 h-6 rounded-full bg-teal-600 text-white text-xs flex items-center justify-center">4</span>
+                                    책임감면 및 신변보호 조치
+                                </div>
+                                <p class="text-xs text-slate-600 mt-1 pl-8">신고와 관련해 발견된 신고자 본인의 위법행위에 대해 형벌이나 징계를 감면받을 수 있으며, 경찰 신변보호를 요청할 수 있습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 익명 공익신고 모의 접수 시뮬레이터 -->
+                <div class="lg:col-span-7 bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                        <div>
+                            <span class="text-xs font-bold text-teal-600 uppercase tracking-wider">체험용 샌드박스 (실제 전송되지 않음)</span>
+                            <h4 class="font-bold text-lg text-navy-900">비실명 공익신고 모의 접수 체험</h4>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <i class="fa-solid fa-shield-halved mr-1"></i>종단간 암호화 보호 모드
+                        </span>
+                    </div>
+
+                    <form id="whistleblower-form" onsubmit="handleMockReport(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">신고 분야 선택</label>
+                                <select id="report-category" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-teal-600 bg-white">
+                                    <option value="공공재정 부정수급 및 횡령">공공재정 부정수급 및 보조금 횡령</option>
+                                    <option value="채용 비리 및 인사 청탁">공공·민간 채용 비리 및 인사 청탁</option>
+                                    <option value="불공정 하도급 및 입찰 담합">불공정 하도급 및 입찰 담합</option>
+                                    <option value="안전 규정 위반 및 은폐">산업·생활 안전 규정 위반 및 은폐</option>
+                                    <option value="개인정보 불법 유출·거래">개인정보 불법 유출 및 거래</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">신고 방식 선택</label>
+                                <select id="report-method" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-teal-600 bg-white">
+                                    <option value="비실명 대리신고 (안심 변호사 선임)">비실명 대리신고 (안심 변호사 선임)</option>
+                                    <option value="가명 처리 익명 신고">가명 처리 익명 신고</option>
+                                    <option value="신분공개 동의 정식 신고">신분공개 동의 정식 신고</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">모의 신고 내용 요약 (육하원칙 기준)</label>
+                            <textarea id="report-content" rows="3" required placeholder="예: 2026년 10월 OO기관 용역 입찰 과정에서 특정 업체에 평가 기준을 사전 유출한 정황을 확인했습니다." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:border-teal-600"></textarea>
+                        </div>
+
+                        <!-- 증거 확보 체크리스트 -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="text-xs font-bold text-navy-900 mb-2">신뢰성 확보를 위한 보유 증거 유형 체크 (복수 선택)</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="evidence-chk rounded text-teal-600" value="공문서·회계장부 사본">
+                                    <span>공문서 · 회계장부 · 계약서 사본</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="evidence-chk rounded text-teal-600" value="이메일·메신저 대화 기록">
+                                    <span>이메일 · 메신저 지시 내역</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="evidence-chk rounded text-teal-600" value="현장 사진·영상 자료">
+                                    <span>현장 사진 · 영상 · 녹취 기록</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="evidence-chk rounded text-teal-600" value="참고인 진술 및 정황 기록">
+                                    <span>구체적 일시·장소·참고인 메모</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>비실명 모의 접수 및 보호 절차 시뮬레이션 실행 (+25점)</span>
+                        </button>
+                    </form>
+
+                    <!-- 모의 접수 결과 영수증 및 처리 파이프라인 -->
+                    <div id="report-result" class="hidden mt-6 bg-navy-900 text-white rounded-2xl p-5 border border-teal-500/40">
+                        <div class="flex items-center justify-between border-b border-navy-700 pb-3 mb-3">
+                            <span class="text-xs font-bold text-gold-400"><i class="fa-solid fa-circle-check mr-1"></i>모의 접수 및 가명화 처리 완료</span>
+                            <span id="mock-receipt-id" class="text-xs font-mono bg-navy-800 px-2.5 py-1 rounded text-teal-300">CASE-2026-XXXX</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                            귀하의 IP 및 접속 기록은 즉시 파기되었으며, 선택하신 <strong id="res-method" class="text-white"></strong> 방식으로 접수 번호가 발급되었습니다.
+                        </p>
+                        <!-- 제도적 처리 단계 시각화 -->
+                        <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+                            <div class="bg-navy-800 p-2.5 rounded-xl border border-teal-500/30">
+                                <span class="block text-teal-400 font-bold mb-0.5">1단계 (즉시)</span>
+                                <span>인적사항 비식별화 및 비밀보장 발효</span>
+                            </div>
+                            <div class="bg-navy-800 p-2.5 rounded-xl border border-teal-500/30">
+                                <span class="block text-teal-400 font-bold mb-0.5">2단계 (60일 이내)</span>
+                                <span>조사기관 이첩 및 감사·수사 개시</span>
+                            </div>
+                            <div class="bg-navy-800 p-2.5 rounded-xl border border-teal-500/30">
+                                <span class="block text-teal-400 font-bold mb-0.5">3단계 (결과 통보)</span>
+                                <span>공익증진 기여 시 보상금·포상금 지급</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================================
+             TAB 4: SDG 16 일상 정의 실천 미션 트래커 & 시민 서약
+        ====================================================================== -->
+        <section id="tab-tracker" class="tab-content">
+            <div class="mb-6">
+                <h3 class="text-xl sm:text-2xl font-bold text-navy-900 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-navy-900 text-gold-400 flex items-center justify-center text-sm"><i class="fa-solid fa-list-check"></i></span>
+                    SDG 16 일상 평화·정의 실천 트래커
+                </h3>
+                <p class="text-sm text-slate-600 mt-1">거창한 제도는 일상 속 시민의 작은 실천에서 시작됩니다. 오늘 실천한 항목을 체크하고 시민 배지를 획득하세요.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- 왼쪽: 데일리 체크리스트 -->
+                <div class="lg:col-span-7 bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-bold text-base text-navy-900">오늘의 시민 실천 미션 (각 +15점)</h4>
+                        <span id="mission-progress-text" class="text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full">0 / 6 완료</span>
+                    </div>
+
+                    <div id="mission-list" class="space-y-3">
+                        <!-- JS로 동적 렌더링 -->
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 획득 배지 & 나의 정의 서약서 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <!-- 시민 등급 & 배지 -->
+                    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                        <h4 class="font-bold text-base text-navy-900 mb-3">나의 시민 역량 등급 및 배지</h4>
+                        <div class="bg-gradient-to-r from-navy-900 to-navy-800 rounded-xl p-4 text-white flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-xs text-slate-400">현재 시민 등급</span>
+                                <h5 id="citizen-rank-title" class="text-lg font-bold text-gold-400">깨어있는 시민 새싹</h5>
+                                <p id="citizen-rank-desc" class="text-xs text-slate-300 mt-0.5">권리 탐색과 투명성 참여를 시작했습니다.</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-gold-500/20 border border-gold-400 flex items-center justify-center text-gold-400 text-xl">
+                                <i id="citizen-rank-icon" class="fa-solid fa-seedling"></i>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div id="badge-law" class="p-3 rounded-xl border border-slate-200 bg-slate-50 opacity-40 transition">
+                                <i class="fa-solid fa-scale-balanced text-xl text-navy-900 mb-1"></i>
+                                <span class="block text-[11px] font-bold text-slate-800">권리 수호자</span>
+                            </div>
+                            <div id="badge-budget" class="p-3 rounded-xl border border-slate-200 bg-slate-50 opacity-40 transition">
+                                <i class="fa-solid fa-magnifying-glass-dollar text-xl text-teal-600 mb-1"></i>
+                                <span class="block text-[11px] font-bold text-slate-800">투명성 감시관</span>
+                            </div>
+                            <div id="badge-integrity" class="p-3 rounded-xl border border-slate-200 bg-slate-50 opacity-40 transition">
+                                <i class="fa-solid fa-shield-heart text-xl text-gold-600 mb-1"></i>
+                                <span class="block text-[11px] font-bold text-slate-800">청렴 지킴이</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 디지털 시민 서약 보드 -->
+                    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                        <h4 class="font-bold text-base text-navy-900 mb-2">나의 SDG 16 시민 실천 서약</h4>
+                        <p class="text-xs text-slate-500 mb-3">허위정보 배격, 타인의 인권 존중, 부패 불용인 등 나만의 다짐을 기록해 보세요.</p>
+                        <div class="flex gap-2">
+                            <input type="text" id="pledge-input" placeholder="예: 출처가 불분명한 혐오·허위 게시물을 공유하지 않겠습니다." class="flex-1 rounded-xl border border-slate-300 px-3.5 py-2 text-xs sm:text-sm focus:outline-none focus:border-navy-900">
+                            <button onclick="savePledge()" class="px-4 py-2 bg-navy-900 hover:bg-navy-800 text-white text-xs sm:text-sm font-bold rounded-xl transition whitespace-nowrap">
+                                서약 등록
+                            </button>
+                        </div>
+                        <div id="pledge-display" class="mt-3 hidden bg-amber-50/80 border border-amber-200 rounded-xl p-3.5">
+                            <p class="text-[11px] font-bold text-amber-800 mb-1"><i class="fa-solid fa-certificate mr-1"></i>나의 공식 시민 서약</p>
+                            <p id="pledge-text" class="text-xs sm:text-sm font-medium text-navy-900"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 알림 토스트 메시지 (alert 대체) -->
+    <div id="toast-box" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-navy-900 text-white px-5 py-3.5 rounded-2xl shadow-xl border border-gold-400/40 flex items-center space-x-3 max-w-sm">
+            <i class="fa-solid fa-circle-check text-gold-400 text-lg"></i>
+            <p id="toast-message" class="text-xs sm:text-sm font-medium"></p>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="bg-navy-950 text-slate-400 py-6 px-4 sm:px-6 lg:px-8 border-t border-navy-800 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
+            <div class="flex items-center space-x-2">
+                <span class="font-bold text-white">UN SDG 16 시민 참여·투명성 플랫폼</span>
+                <span>|</span>
+                <span>평화롭고 포용적인 사회, 모두를 위한 사법 접근성 및 효과적인 제도 구축</span>
+            </div>
+            <button onclick="resetAllProgress()" class="text-slate-500 hover:text-rose-400 underline transition">
+                학습 및 실천 기록 초기화
+            </button>
+        </div>
+    </footer>
+
+    <!-- 애플리케이션 로직 (JavaScript) -->
+    <script>
+        // =====================================================================
+        // 1. 데이터 정의 (시나리오, 실천 미션)
+        // =====================================================================
+        const scenariosData = [
+            {
+                id: 'labor',
+                category: '청년 노동권',
+                icon: 'fa-briefcase',
+                title: '수습 기간 임금 삭감 및 근로계약서 미작성',
+                lawRef: '근로기준법 제17조 · 최저임금법 제5조',
+                situation: '카페 아르바이트를 시작한 대학생 지민 씨는 사장님으로부터 "수습 3개월 동안은 최저임금의 80%만 지급하고, 근로계약서는 수습이 끝나면 작성하자"는 말을 들었습니다. 단기 아르바이트(6개월 계약)인 경우 어떻게 대응해야 할까요?',
+                choices: [
+                    {
+                        text: '수습 기간이므로 불이익이 없도록 참고 3개월간 80% 임금으로 일한다.',
+                        isCorrect: false,
+                        heading: '법적 권리를 포기하는 선택입니다',
+                        desc: '1년 미만으로 근로계약을 체결한 경우에는 수습 기간이라도 최저임금을 감액할 수 없습니다. 또한 근로계약서 미작성 및 미교부는 사업주의 명백한 법 위반입니다.',
+                        institution: '고용노동부 고객상담센터(국번없이 1350) 또는 청소년근로권익센터(1644-3119)를 통해 무료 노무 상담 및 임금체불 진정을 신청할 수 있습니다.'
+                    },
+                    {
+                        text: '근무 시작 전 근로계약서 작성을 정중히 요구하고, 1년 미만 계약 시 최저임금 100% 지급 대상임을 근거로 시정을 요청한다.',
+                        isCorrect: true,
+                        heading: '정확한 법적 권리 행사입니다! (+20점)',
+                        desc: '최저임금법상 1년 이상의 근로계약을 체결한 경우에만 수습 3개월 이내 최대 10% 감액이 가능합니다. 6개월 계약직은 첫날부터 최저임금 100%를 보장받으며 근로계약서를 반드시 교부받아야 합니다.',
+                        institution: '근무 일지·급여 이체 내역·대화 기록을 보관한 뒤, 고용노동부 민원마당 온라인 진정 또는 대한법률구조공단(132) 무료 법률 지원을 활용할 수 있습니다.'
+                    }
+                ]
+            },
+            {
+                id: 'digital',
+                category: '디지털 인권·명예훼손',
+                icon: 'fa-laptop-code',
+                title: '온라인 커뮤니티 내 허위사실 유포 및 신상 노출',
+                lawRef: '정보통신망법 제70조 · 개인정보 보호법',
+                situation: '온라인 익명 게시판에 민수 씨의 실명과 학교, 연락처가 무단으로 게시되고, 전혀 사실이 아닌 악의적 비방 댓글이 확산되고 있습니다. 즉각적인 피해 확산을 막기 위한 가장 효과적인 제도적 조치는 무엇일까요?',
+                choices: [
+                    {
+                        text: '게시글 임시조치(블라인드)를 플랫폼에 즉시 요청하고, 화면 캡처 및 URL 등 증거를 보전한 뒤 수사기관·조정위원회에 구제를 신청한다.',
+                        isCorrect: true,
+                        heading: '신속하고 체계적인 디지털 권리 구제입니다! (+20점)',
+                        desc: '정보통신망법 제44조의2에 따라 권리 침해를 받은 자는 플랫폼 사업자에게 해당 정보의 삭제 또는 임시조치(30일 차단)를 요구할 수 있으며, 동시에 증거를 확보해 형사 고소 및 분쟁조정을 진행해야 합니다.',
+                        institution: '방송통신심의위원회(1377) 권리침해 신고, 개인정보침해신고센터(118), 경찰청 사이버범죄 신고시스템(ECRM)을 통해 원스톱 보호를 받을 수 있습니다.'
+                    },
+                    {
+                        text: '상대방의 신상을 똑같이 추적해 맞대응 게시글을 올려 억울함을 해명한다.',
+                        isCorrect: false,
+                        heading: '2차 법적 분쟁에 휘말릴 위험이 큽니다',
+                        desc: '상대방의 개인정보를 무단 공개하거나 비방할 경우 본인 역시 정보통신망법 위반(명예훼손) 및 개인정보 보호법 위반으로 처벌받을 수 있습니다.',
+                        institution: '감정적 맞대응 대신 방송통신심의위원회 명예훼손 분쟁조정부를 이용하면 가해자 특정(이용자 정보 제공 청구)을 합법적으로 진행할 수 있습니다.'
+                    }
+                ]
+            },
+            {
+                id: 'info',
+                category: '시민 알 권리·정보공개',
+                icon: 'fa-file-lines',
+                title: '우리 동네 공공시설 공사 지연 사유 및 예산 집행 확인',
+                lawRef: '공공기관의 정보공개에 관한 법률 제3조',
+                situation: '주민 이용이 많은 공공 도서관 리모델링 공사가 예정보다 6개월 이상 지연되고 있으나, 안내문에는 구체적인 사유와 추가 예산 내역이 공개되지 않았습니다. 시민으로서 투명한 행정 정보를 확인하는 공식 절차는 무엇일까요?',
+                choices: [
+                    {
+                        text: '공무원 내부 자료이므로 일반 시민은 열람할 권리가 없다고 보고 완공될 때까지 기다린다.',
+                        isCorrect: false,
+                        heading: '헌법과 법률이 보장한 알 권리를 놓치고 있습니다',
+                        desc: '모든 국민은 공공기관이 보유·관리하는 정보의 공개를 청구할 권리를 가지며, 공공기관은 비공개 대상 정보에 해당하지 않는 한 10일 이내에 공개 여부를 결정해야 합니다.',
+                        institution: '대한민국 정보공개포털(open.go.kr)에서 회원가입 후 온라인으로 간편하게 정보공개청구를 신청할 수 있습니다.'
+                    },
+                    {
+                        text: '정보공개포털(open.go.kr)을 통해 공사 지연 사유서와 변경 계약 예산 내역에 대한 정보공개청구를 신청한다.',
+                        isCorrect: true,
+                        heading: '행정 투명성을 높이는 적극적 시민 참여입니다! (+20점)',
+                        desc: '정보공개청구는 행정의 투명성과 책임성을 확보하는 SDG 16의 핵심 수단입니다. 만약 부당하게 비공개 결정을 받으면 이의신청, 행정심판, 행정소송으로 다툴 수 있습니다.',
+                        institution: '정보공개포털(open.go.kr) 및 중앙행정심판위원회, 국민권익위원회 국민신문고(110)를 통해 투명한 행정 감시에 참여할 수 있습니다.'
+                    }
+                ]
+            },
+            {
+                id: 'fraud',
+                category: '청년 주거·전세 사기 예방',
+                icon: 'fa-house-lock',
+                title: '사회초년생 첫 원룸 임대차 계약 체결 직전 확인',
+                lawRef: '주택임대차보호법 제3조 · 제3조의2',
+                situation: '첫 직장을 구한 수진 씨는 시세보다 저렴한 빌라 전세 계약을 앞두고 있습니다. 공인중개사는 "집주인이 바빠서 등기부등본과 세금 완납증명서는 계약금 입금 후에 보여주겠다"고 말합니다. 어떻게 행동해야 할까요?',
+                choices: [
+                    {
+                        text: '좋은 매물을 놓칠 수 있으므로 계약금을 먼저 송금한 뒤 서류를 확인한다.',
+                        isCorrect: false,
+                        heading: '보증금 미반환 위험에 크게 노출되는 선택입니다',
+                        desc: '근저당권 설정 여부, 신탁 부동산 여부, 임대인의 국세·지방세 체납 여부는 계약금 지급 전에 반드시 직접 확인해야 하는 필수 안전장치입니다.',
+                        institution: '국토교통부 전세피해지원센터(1533-8119) 및 주택도시보증공사(HUG) 안심전세포털에서 계약 전 자가진단을 무료로 이용할 수 있습니다.'
+                    },
+                    {
+                        text: '계약금 입금을 보류하고 인터넷등기소에서 등기부등본을 직접 발급받아 선순위 채권과 세금 완납 여부를 먼저 검증한다.',
+                        isCorrect: true,
+                        heading: '재산권을 지키는 현명한 법적 예방 조치입니다! (+20점)',
+                        desc: '계약 당일 직접 발급한 등기부등본으로 소유자와 근저당권을 확인하고, 잔금 지급 즉시 전입신고와 확정일자를 받아 대항력과 우선변제권을 확보해야 합니다.',
+                        institution: '대법원 인터넷등기소, 정부24(전입신고·확정일자), HUG 전세보증금반환보증 제도를 통해 법적 안전망을 구축할 수 있습니다.'
+                    }
+                ]
+            }
+        ];
+
+        const dailyMissionsData = [
+            { id: 'm1', title: '온라인 기사·SNS 공유 전 1차 출처와 공식 통계 교차 확인(팩트체크)하기', category: '정보 투명성' },
+            { id: 'm2', title: '온라인 댓글 및 커뮤니티에서 혐오 표현·차별적 언어 사용하지 않기', category: '평화·포용' },
+            { id: 'm3', title: '우리 지자체 또는 학교·직장의 공지사항 및 예산·운영 공개 자료 1건 열람하기', category: '알 권리' },
+            { id: 'm4', title: '타인의 창작물·사진·개인정보 게시 시 사전 동의 및 저작권 출처 표기하기', category: '디지털 인권' },
+            { id: 'm5', title: '불법 촬영물·보이스피싱·악성 허위정보 발견 시 플랫폼 신고 버튼으로 즉각 차단 돕기', category: '안전·정의' },
+            { id: 'm6', title: '주변의 취약계층·고령층이 키오스크나 모바일 공공서비스 이용 시 친절히 안내하기', category: '제도 접근성' }
+        ];
+
+        // =====================================================================
+        // 2. 상태 관리 및 LocalStorage 연동
+        // =====================================================================
+        let appState = {
+            score: 0,
+            completedScenarios: [],
+            budgetSubmitted: false,
+            reportSubmitted: false,
+            completedMissions: [],
+            pledge: '',
+            budget: { justice: 25, transparency: 25, safety: 25, inclusion: 25 }
+        };
+
+        let currentScenarioId = 'labor';
+        let autoAdvanceTimer = null;
+        let autoAdvanceInterval = null;
+
+        function cancelAutoAdvance() {
+            if (autoAdvanceTimer) {
+                clearTimeout(autoAdvanceTimer);
+                autoAdvanceTimer = null;
+            }
+            if (autoAdvanceInterval) {
+                clearInterval(autoAdvanceInterval);
+                autoAdvanceInterval = null;
+            }
+            const autoBox = document.getElementById('auto-advance-box');
+            if (autoBox) autoBox.classList.add('hidden');
+        }
+
+        function startAutoAdvance(delayMs, labelText, onCompleteCallback) {
+            cancelAutoAdvance();
+            const autoBox = document.getElementById('auto-advance-box');
+            const autoLabel = document.getElementById('auto-advance-label');
+            const autoBar = document.getElementById('auto-advance-bar');
+
+            autoLabel.innerHTML = `<i class="fa-solid fa-forward-step text-teal-600 animate-pulse"></i><span>${labelText}</span>`;
+            autoBar.style.width = '100%';
+            autoBox.classList.remove('hidden');
+
+            const startTime = Date.now();
+            autoAdvanceInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const remainingPct = Math.max(0, 100 - (elapsed / delayMs) * 100);
+                autoBar.style.width = `${remainingPct}%`;
+            }, 50);
+
+            autoAdvanceTimer = setTimeout(() => {
+                cancelAutoAdvance();
+                onCompleteCallback();
+            }, delayMs);
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('sdg16_civic_platform_v1');
+            if (saved) {
+                try {
+                    appState = { ...appState, ...JSON.parse(saved) };
+                } catch (e) {
+                    console.error('상태 복원 오류:', e);
+                }
+            }
+            updateAllUI();
+        }
+
+        function saveState() {
+            localStorage.setItem('sdg16_civic_platform_v1', JSON.stringify(appState));
+            updateAllUI();
+        }
+
+        function resetAllProgress() {
+            cancelAutoAdvance();
+            localStorage.removeItem('sdg16_civic_platform_v1');
+            appState = {
+                score: 0,
+                completedScenarios: [],
+                budgetSubmitted: false,
+                reportSubmitted: false,
+                completedMissions: [],
+                pledge: '',
+                budget: { justice: 25, transparency: 25, safety: 25, inclusion: 25 }
+            };
+            resetBudget(false);
+            updateAllUI();
+            renderScenarioCards();
+            selectScenario('labor');
+            renderMissions();
+            showToast('모든 학습 및 실천 기록이 초기화되었습니다.');
+        }
+
+        // =====================================================================
+        // 3. 탭 전환 및 공통 UI 업데이트
+        // =====================================================================
+        function switchTab(tabKey) {
+            cancelAutoAdvance();
+            // 모든 탭 콘텐츠 숨김
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // 모든 버튼 비활성화 스타일 적용
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-teal-600', 'text-white', 'shadow');
+                btn.classList.add('text-slate-300', 'hover:bg-navy-800', 'hover:text-white');
+            });
+
+            // 대상 탭 활성화
+            document.getElementById(`tab-${tabKey}`).classList.add('active');
+            const activeBtn = document.getElementById(`tab-btn-${tabKey}`);
+            activeBtn.classList.remove('text-slate-300', 'hover:bg-navy-800', 'hover:text-white');
+            activeBtn.classList.add('bg-teal-600', 'text-white', 'shadow');
+        }
+
+        function updateAllUI() {
+            // 상단 점수 및 현황 업데이트
+            document.getElementById('header-score').textContent = appState.score;
+            document.getElementById('hero-scenarios-count').textContent = `${appState.completedScenarios.length} / ${scenariosData.length}`;
+
+            const missionPct = Math.round((appState.completedMissions.length / dailyMissionsData.length) * 100);
+            document.getElementById('hero-mission-rate').textContent = `${missionPct}%`;
+            document.getElementById('mission-progress-text').textContent = `${appState.completedMissions.length} / ${dailyMissionsData.length} 완료`;
+
+            // 배지 해금 상태 업데이트
+            if (appState.completedScenarios.length >= 2) {
+                document.getElementById('badge-law').classList.remove('opacity-40');
+                document.getElementById('badge-law').classList.add('border-navy-900', 'bg-white', 'shadow-sm');
+            }
+            if (appState.budgetSubmitted) {
+                document.getElementById('badge-budget').classList.remove('opacity-40');
+                document.getElementById('badge-budget').classList.add('border-teal-600', 'bg-white', 'shadow-sm');
+            }
+            if (appState.reportSubmitted || appState.completedMissions.length >= 3) {
+                document.getElementById('badge-integrity').classList.remove('opacity-40');
+                document.getElementById('badge-integrity').classList.add('border-gold-500', 'bg-white', 'shadow-sm');
+            }
+
+            // 시민 등급 업데이트
+            const rankTitle = document.getElementById('citizen-rank-title');
+            const rankDesc = document.getElementById('citizen-rank-desc');
+            const rankIcon = document.getElementById('citizen-rank-icon');
+
+            if (appState.score >= 150) {
+                rankTitle.textContent = 'SDG 16 정의·투명성 앰배서더';
+                rankDesc.textContent = '법치주의와 투명한 공동체를 이끄는 모범 시민입니다.';
+                rankIcon.className = 'fa-solid fa-crown';
+            } else if (appState.score >= 70) {
+                rankTitle.textContent = '능동적 제도 감시 시민';
+                rankDesc.textContent = '권리 구제와 공공 투명성 감시에 적극 참여하고 있습니다.';
+                rankIcon.className = 'fa-solid fa-shield-halved';
+            } else {
+                rankTitle.textContent = '깨어있는 시민 새싹';
+                rankDesc.textContent = '권리 탐색과 투명성 참여를 시작했습니다.';
+                rankIcon.className = 'fa-solid fa-seedling';
+            }
+
+            // 서약 표시
+            if (appState.pledge) {
+                document.getElementById('pledge-display').classList.remove('hidden');
+                document.getElementById('pledge-text').textContent = `"${appState.pledge}"`;
+            }
+        }
+
+        function showToast(msg) {
+            const toastBox = document.getElementById('toast-box');
+            document.getElementById('toast-message').textContent = msg;
+            toastBox.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toastBox.classList.add('translate-y-20', 'opacity-0');
+            }, 3400);
+        }
+
+        // =====================================================================
+        // 4. TAB 1: 권리 및 법률 시나리오 시뮬레이터 로직
+        // =====================================================================
+        function renderScenarioCards() {
+            const container = document.getElementById('scenario-cards');
+            container.innerHTML = scenariosData.map(sc => {
+                const isSelected = sc.id === currentScenarioId;
+                const isDone = appState.completedScenarios.includes(sc.id);
+                return `
+                    <button onclick="selectScenario('${sc.id}')" class="text-left p-4 rounded-2xl border transition-all flex flex-col justify-between h-full ${isSelected ? 'bg-navy-900 text-white border-navy-900 shadow-lg ring-2 ring-teal-500' : 'bg-white text-slate-800 border-slate-200 hover:border-teal-500 hover:shadow'}">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold px-2.5 py-0.5 rounded-md ${isSelected ? 'bg-teal-600 text-white' : 'bg-slate-100 text-navy-900'}">${sc.category}</span>
+                                ${isDone ? '<span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-circle-check"></i> 완료</span>' : '<span class="text-xs text-slate-400">미완료</span>'}
+                            </div>
+                            <h4 class="font-bold text-sm leading-snug mt-1">${sc.title}</h4>
+                        </div>
+                        <div class="mt-3 pt-2 border-t ${isSelected ? 'border-navy-800 text-gold-400' : 'border-slate-100 text-slate-400'} text-[11px] flex items-center justify-between">
+                            <span>사례 살펴보기</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectScenario(id) {
+            cancelAutoAdvance();
+            currentScenarioId = id;
+            renderScenarioCards();
+
+            const sc = scenariosData.find(item => item.id === id);
+            if (!sc) return;
+
+            document.getElementById('player-badge').textContent = sc.category;
+            document.getElementById('player-title').textContent = sc.title;
+            document.getElementById('player-law-ref').textContent = sc.lawRef;
+            document.getElementById('player-situation').textContent = sc.situation;
+
+            const feedbackBox = document.getElementById('player-feedback');
+            feedbackBox.classList.add('hidden');
+
+            const choicesContainer = document.getElementById('player-choices');
+            choicesContainer.innerHTML = sc.choices.map((choice, idx) => `
+                <button onclick="evaluateChoice('${sc.id}', ${idx})" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-navy-900 hover:bg-slate-50 transition flex items-start space-x-3 group">
+                    <span class="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-navy-900 group-hover:text-white text-navy-900 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5 transition">
+                        ${idx === 0 ? 'A' : 'B'}
+                    </span>
+                    <span class="text-sm font-medium text-slate-800 leading-relaxed">${choice.text}</span>
+                </button>
+            `).join('');
+        }
+
+        function evaluateChoice(scId, choiceIdx) {
+            cancelAutoAdvance();
+            const sc = scenariosData.find(item => item.id === scId);
+            const choice = sc.choices[choiceIdx];
+
+            const feedbackBox = document.getElementById('player-feedback');
+            const iconBox = document.getElementById('feedback-icon');
+            const heading = document.getElementById('feedback-heading');
+            const desc = document.getElementById('feedback-desc');
+            const inst = document.getElementById('feedback-institution');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'bg-amber-50', 'border-amber-300');
+            iconBox.classList.remove('bg-emerald-600', 'bg-amber-500', 'text-white');
+
+            if (choice.isCorrect) {
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-300');
+                iconBox.classList.add('bg-emerald-600', 'text-white');
+                iconBox.innerHTML = '<i class="fa-solid fa-check"></i>';
+                heading.className = 'font-bold text-base sm:text-lg mb-1 text-emerald-900';
+
+                if (!appState.completedScenarios.includes(scId)) {
+                    appState.completedScenarios.push(scId);
+                    appState.score += 20;
+                    saveState();
+                    renderScenarioCards();
+                    showToast(`법률 시나리오 해결 완료! 시민 정의 지수 +20점 획득`);
+                }
+
+                // 아직 풀지 않은 다음 시나리오 찾기 (현재 인덱스 이후 우선, 없으면 처음부터 탐색)
+                const currentIndex = scenariosData.findIndex(item => item.id === scId);
+                let nextScenario = null;
+                for (let i = 1; i <= scenariosData.length; i++) {
+                    const candidate = scenariosData[(currentIndex + i) % scenariosData.length];
+                    if (!appState.completedScenarios.includes(candidate.id)) {
+                        nextScenario = candidate;
+                        break;
+                    }
+                }
+
+                if (nextScenario) {
+                    startAutoAdvance(
+                        3200,
+                        `잠시 후 다음 문제 [${nextScenario.category}]로 자동 이동합니다...`,
+                        () => {
+                            selectScenario(nextScenario.id);
+                            document.getElementById('scenario-player').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    );
+                } else {
+                    // 모든 4개 시나리오를 다 풀었을 경우 다음 학습 섹션(투명 예산 참여 탭)으로 자동 이동
+                    startAutoAdvance(
+                        3800,
+                        '모든 권리 시나리오를 완료했습니다! 다음 단계 [2. 투명 예산·정책 참여]로 자동 이동합니다...',
+                        () => {
+                            switchTab('budget');
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            showToast('모든 권리 시나리오 완료! 2단계 참여예산 시뮬레이터로 이동했습니다.');
+                        }
+                    );
+                }
+            } else {
+                feedbackBox.classList.add('bg-amber-50', 'border-amber-300');
+                iconBox.classList.add('bg-amber-500', 'text-white');
+                iconBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                heading.className = 'font-bold text-base sm:text-lg mb-1 text-amber-900';
+            }
+
+            heading.textContent = choice.heading;
+            desc.textContent = choice.desc;
+            inst.textContent = choice.institution;
+        }
+
+        // =====================================================================
+        // 5. TAB 2: 참여예산 시뮬레이터 로직
+        // =====================================================================
+        function updateBudget(changedKey, rawValue) {
+            const newVal = parseInt(rawValue, 10);
+            const keys = ['justice', 'transparency', 'safety', 'inclusion'];
+            const otherKeys = keys.filter(k => k !== changedKey);
+
+            // 나머지 항목 합계 계산 후 100억 원 한도 내 자동 비례 조정
+            const remainingBudget = 100 - newVal;
+            const currentOtherSum = otherKeys.reduce((sum, k) => sum + appState.budget[k], 0);
+
+            appState.budget[changedKey] = newVal;
+
+            if (currentOtherSum === 0) {
+                const evenShare = Math.floor(remainingBudget / otherKeys.length);
+                let leftover = remainingBudget - evenShare * otherKeys.length;
+                otherKeys.forEach((k, i) => {
+                    appState.budget[k] = evenShare + (i === 0 ? leftover : 0);
+                });
+            } else {
+                let allocated = 0;
+                otherKeys.forEach((k, idx) => {
+                    if (idx === otherKeys.length - 1) {
+                        appState.budget[k] = Math.max(0, remainingBudget - allocated);
+                    } else {
+                        const share = Math.round((appState.budget[k] / currentOtherSum) * remainingBudget);
+                        appState.budget[k] = share;
+                        allocated += share;
+                    }
+                });
+            }
+
+            renderBudgetUI();
+        }
+
+        function renderBudgetUI() {
+            const { justice, transparency, safety, inclusion } = appState.budget;
+            const total = justice + transparency + safety + inclusion;
+            const remain = 100 - total;
+
+            document.getElementById('budget-remaining').textContent = `${remain}억 원 남음`;
+
+            ['justice', 'transparency', 'safety', 'inclusion'].forEach(k => {
+                const val = appState.budget[k];
+                document.getElementById(`slider-${k}`).value = val;
+                document.getElementById(`val-${k}`).textContent = val;
+                document.getElementById(`pct-${k}`).textContent = val;
+                document.getElementById(`bar-${k}`).style.width = `${val}%`;
+            });
+
+            // 제도 건강도 지수 계산
+            const scoreTrans = Math.min(100, Math.round(52 + transparency * 1.1 + inclusion * 0.3));
+            const scoreFair = Math.min(100, Math.round(50 + justice * 1.05 + safety * 0.4));
+            const scorePart = Math.min(100, Math.round(50 + inclusion * 1.1 + transparency * 0.35));
+
+            document.getElementById('score-transparency').textContent = `${scoreTrans} / 100`;
+            document.getElementById('meter-transparency').style.width = `${scoreTrans}%`;
+
+            document.getElementById('score-fairness').textContent = `${scoreFair} / 100`;
+            document.getElementById('meter-fairness').style.width = `${scoreFair}%`;
+
+            document.getElementById('score-participation').textContent = `${scorePart} / 100`;
+            document.getElementById('meter-participation').style.width = `${scorePart}%`;
+
+            const gradeBadge = document.getElementById('policy-grade');
+            const adviceEl = document.getElementById('policy-advice');
+
+            if (transparency >= 35) {
+                gradeBadge.textContent = '반부패·투명성 특화형';
+                adviceEl.textContent = '공공데이터 개방과 실시간 예산 감시에 집중 투자하여 행정 부패 원천 차단과 시민 알 권리 보장에 매우 탁월한 효과를 발휘합니다.';
+            } else if (justice >= 35) {
+                gradeBadge.textContent = '사법 접근성·인권 수호형';
+                adviceEl.textContent = '경제적 여건과 관계없이 모든 시민이 법의 보호를 받을 수 있도록 무료 법률 구조와 사법 정의 인프라를 대폭 강화한 설계입니다.';
+            } else if (safety >= 35) {
+                gradeBadge.textContent = '생활 안전·피해자 보호형';
+                adviceEl.textContent = '범죄 예방 인프라와 피해자 회복 지원을 최우선으로 배치하여 지역사회의 평화롭고 안전한 일상을 두텁게 보호합니다.';
+            } else if (inclusion >= 35) {
+                gradeBadge.textContent = '디지털 포용·시민 주권형';
+                adviceEl.textContent = '디지털 소외계층 없이 누구나 정책 결정 과정에 참여할 수 있는 포용적 민주주의 기반을 탄탄하게 구축합니다.';
+            } else {
+                gradeBadge.textContent = '균형 발전형';
+                adviceEl.textContent = '4대 핵심 영역이 조화롭게 배분되어 제도적 안정성과 시민 신뢰도가 균형 있게 상승합니다.';
+            }
+        }
+
+        function resetBudget(notify = true) {
+            appState.budget = { justice: 25, transparency: 25, safety: 25, inclusion: 25 };
+            renderBudgetUI();
+            if (notify) showToast('예산 배분이 기본 균형값(각 25억 원)으로 초기화되었습니다.');
+        }
+
+        function submitBudgetProposal() {
+            if (!appState.budgetSubmitted) {
+                appState.budgetSubmitted = true;
+                appState.score += 30;
+                showToast('참여예산안이 확정되었습니다! 시민 정의 지수 +30점 & 배지 획득!');
+            } else {
+                showToast('수정된 참여예산안이 성공적으로 반영되었습니다.');
+            }
+            saveState();
+        }
+
+        // =====================================================================
+        // 6. TAB 3: 반부패·공익신고 모의 체험 로직
+        // =====================================================================
+        function handleMockReport(event) {
+            event.preventDefault();
+            const method = document.getElementById('report-method').value;
+            const randomCode = Math.floor(1000 + Math.random() * 9000);
+
+            document.getElementById('mock-receipt-id').textContent = `CASE-2026-${randomCode}`;
+            document.getElementById('res-method').textContent = method;
+            document.getElementById('report-result').classList.remove('hidden');
+
+            if (!appState.reportSubmitted) {
+                appState.reportSubmitted = true;
+                appState.score += 25;
+                showToast('비실명 공익신고 모의 체험 완료! 시민 정의 지수 +25점 획득!');
+            } else {
+                showToast('모의 공익신고 가명화 접수 절차가 완료되었습니다.');
+            }
+            saveState();
+        }
+
+        // =====================================================================
+        // 7. TAB 4: 일상 정의 실천 트래커 & 시민 서약 로직
+        // =====================================================================
+        function renderMissions() {
+            const listEl = document.getElementById('mission-list');
+            listEl.innerHTML = dailyMissionsData.map(m => {
+                const checked = appState.completedMissions.includes(m.id);
+                return `
+                    <label class="flex items-start space-x-3 p-3.5 rounded-xl border transition cursor-pointer ${checked ? 'bg-teal-50/70 border-teal-300' : 'bg-slate-50 border-slate-200 hover:border-navy-800'}">
+                        <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleMission('${m.id}')" class="mt-1 w-4 h-4 rounded text-teal-600 focus:ring-teal-500">
+                        <div class="flex-1">
+                            <span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded bg-white border border-slate-200 text-navy-900 mb-1">${m.category}</span>
+                            <p class="text-xs sm:text-sm font-medium ${checked ? 'line-through text-slate-400' : 'text-slate-800'}">${m.title}</p>
+                        </div>
+                    </label>
+                `;
+            }).join('');
+        }
+
+        function toggleMission(missionId) {
+            const idx = appState.completedMissions.indexOf(missionId);
+            if (idx === -1) {
+                appState.completedMissions.push(missionId);
+                appState.score += 15;
+                showToast('일상 정의 미션 실천 완료! +15점');
+            } else {
+                appState.completedMissions.splice(idx, 1);
+                appState.score = Math.max(0, appState.score - 15);
+            }
+            saveState();
+            renderMissions();
+        }
+
+        function savePledge() {
+            const input = document.getElementById('pledge-input');
+            const text = input.value.trim();
+            if (!text) {
+                showToast('서약 내용을 입력해 주세요.');
+                return;
+            }
+            const isFirst = !appState.pledge;
+            appState.pledge = text;
+            if (isFirst) {
+                appState.score += 15;
+                showToast('나의 시민 실천 서약이 등록되었습니다! (+15점)');
+            } else {
+                showToast('시민 실천 서약이 업데이트되었습니다.');
+            }
+            input.value = '';
+            saveState();
+        }
+
+        // =====================================================================
+        // 8. 초기 실행 (페이지 로드 시)
+        // =====================================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            renderScenarioCards();
+            selectScenario(currentScenarioId);
+            renderBudgetUI();
+            renderMissions();
+        });
+    </script>
+</body>
+</html>
